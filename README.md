@@ -26,7 +26,7 @@ Then open the printed local URL (default `http://localhost:5173`).
 Other scripts:
 
 ```bash
-npm run build        # type-check (vue-tsc) + production build
+npm run build        # production build (vite) + type-check (vue-tsc)
 npm run preview      # preview the production build
 npm run lint         # ESLint (flat config)
 npm run lint:fix     # ESLint with autofix
