@@ -5,6 +5,8 @@ import vuetify from 'vite-plugin-vuetify'
 import AutoImport from 'unplugin-auto-import/vite'
 
 export default defineConfig({
+  // GitHub Pages serves from /image-editor/; locally BASE_URL is unset so base stays '/'.
+  base: process.env.BASE_URL ?? '/',
   plugins: [
     // Auto-import the Vue and Pinia composition APIs (ref, computed, watch,
     // defineStore, ...). Scoped to these libraries only; components are still

@@ -34,6 +34,19 @@ npm run format       # Prettier write
 npm run format:check # Prettier check only
 ```
 
+## Deployment
+
+The app is deployed to **GitHub Pages** via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
+
+**What runs automatically:**
+
+- On every **push** or **pull request** to `main`: `npm ci`, production build, and ESLint.
+- On **push to `main` only**: the built `dist/` folder is published to GitHub Pages.
+
+**Live site:** [https://alexandra-.github.io/image-editor/](https://alexandra-.github.io/image-editor/)
+
+Vite uses `base: '/image-editor/'` in CI (`BASE_URL` env var) so assets resolve correctly under the project Pages URL. Local `npm run dev` keeps `base: '/'`.
+
 ## Core idea: edits are data, not pixels
 
 The whole editor is built around one decision:
@@ -159,9 +172,10 @@ Scope is intentional:
 - **Components are still imported explicitly** (no `unplugin-vue-components`). In a real
   codebase, hiding where a component comes from hurts readability more than it helps, so
   that dependency stays visible.
-- Generated types live in [`auto-imports.d.ts`](auto-imports.d.ts), which is **committed
-  to git** so the project type-checks and builds immediately after `npm i`, with no hidden
-  generation step.
+- Generated types live in `auto-imports.d.ts` and ESLint globals in
+  `.eslintrc-auto-import.json`. Both are **generated on first `npm run dev` or
+  `npm run build`** and listed in `.gitignore` (see
+  [unplugin-auto-import docs](https://github.com/unplugin/unplugin-auto-import)).
 
 Note: Vuetify components are also auto-imported, but by `vite-plugin-vuetify` (tree-shaken
 on demand), which is independent of the above.
@@ -174,8 +188,9 @@ on demand), which is independent of the above.
   Prettier.
 - **Prettier** ([`.prettierrc.json`](.prettierrc.json)) owns formatting (no semicolons,
   single quotes, 100-char width).
-- The auto-import globals are fed to ESLint via a generated `.eslintrc-auto-import.json`
-  (committed), so linting does not report `ref`/`computed` as undefined.
+- The auto-import globals are fed to ESLint via the generated `.eslintrc-auto-import.json`
+  (same generation step as above). `eslint.config.js` falls back gracefully if that file
+  is missing before the first build.
 
 ## Trade-offs & known limitations
 
@@ -186,8 +201,6 @@ on demand), which is independent of the above.
   task; the operation-array model would make undo/redo straightforward to add later.
 - **Desktop only** for now. Vuetify's grid is mobile-first, so a responsive pass (e.g. a
   bottom sheet for the edit panel) is a natural next step.
-- **Reorder UI:** ordering is implicit (order of application). A drag-to-reorder list
-  could be layered on top of the same model without changing it.
 
 ## Project structure
 
